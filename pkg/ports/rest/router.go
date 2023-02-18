@@ -6,6 +6,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/tracer"
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/version"
 )
 
 // RegisterFunc is type func to register handler.
@@ -18,6 +22,13 @@ type Router struct {
 
 // Register will assign rest handler.
 func (r *Router) Register(fn RegisterFunc) http.Handler {
+	// set router middleware
+	r.h.Use(tracer.Middleware(
+		infrastructure.Envs.App.ServiceName))
+	r.h.Use(SemanticVersion(
+		infrastructure.Envs.App.ServiceName,
+		version.GetVersion().VersionNumber(),
+	))
 	return fn(r.h)
 }
 

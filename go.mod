@@ -4,12 +4,17 @@ go 1.19
 
 require (
 	entgo.io/ent v0.11.8
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/fatih/color v1.14.1
+	github.com/felixge/httpsnoop v1.0.3
 	github.com/go-chi/chi/v5 v5.0.8
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0
 	github.com/kubuskotak/valkyrie v0.2.2
+	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/cobra v1.6.1
+	github.com/stretchr/testify v1.8.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.39.0
 	go.opentelemetry.io/otel v1.13.0
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.36.0
@@ -29,6 +34,7 @@ require (
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
@@ -44,6 +50,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/oklog/ulid/v2 v2.0.2 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.3.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.13.0 // indirect

@@ -1,92 +1,110 @@
-# Odin
+## Odin
 
-Codebase golang boileplate generate from Ymir CLI.
+> Codebase golang boilerplate generate from Ymir CLI.
 
-## Getting started
+[![forthebadge](https://forthebadge.com/images/badges/made-with-go.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Prerequisites
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- Go 1.19+
+- Docker (Developed with version 20.+)
+- [Taskfile](https://taskfile.dev/) Task runner or Build tool.
+- [golangci](https://golangci-lint.run/usage/install/) golang linter.
+- [entgo](https://entgo.io/) ORM adapter with sql engine, mysql, postgresql and sqlite.
+- For Changelog using [git-chglog](https://github.com/git-chglog/git-chglog)
 
-## Add your files
+#### Create Config File
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Create an env file development by copying the given example.
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.playcourt.id/nanang_suryadi/odin.git
-git branch -M master
-git push -uf origin master
+$ cp .env.defaultexample .env
 ```
 
-## Integrate with your tools
+### Developer Guide
 
-- [ ] [Set up project integrations](https://gitlab.playcourt.id/nanang_suryadi/odin/-/settings/integrations)
+#### General Rules
 
-## Collaborate with your team
+* We use conventional commits to deal with git commits: https://www.conventionalcommits.org
+    - Use `feat: commit message` to do git commit related to feature.
+    - Use `refactor: commit message` to do git commit related to code refactorings.
+    - Use `fix: commit message` to do git commit related to bugfix.
+    - Use `test: commit message` to do git commit related to test files.
+    - Use `docs: commit message` to do git commit related to documentations (including README.md files).
+    - Use `style: commit message` to do git commit related to code style.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+* Use git-chglog https://github.com/git-chglog/git-chglog to generate changelog (CHANGELOG.md) before merging to release
+  branch.
 
-## Test and Deploy
+#### Branching Strategy
 
-Use the built-in continuous integration in GitLab.
+* Keep your branch strategy simple. Build your strategy from these three concepts:
+    - Use feature branches for all new features and bug fixes.
+    - Merge feature branches into the main branch using pull requests.
+    - Keep a high quality, up-to-date main branch.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+#### Use feature branches for your work
 
-***
+Develop your features and fix bugs in feature branches based off your main branch. These branches are also known as
+topic branches. Feature branches isolate work in progress from the completed work in the main branch. Git branches are
+inexpensive to create and maintain. Even small fixes and changes should have their own feature branch.
 
-# Editing this README
+<p align="left"><img src="./featurebranching.png" width="360"></p>
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+#### Name your feature branches by convention
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+* Use a consistent naming convention for your feature branches to identify the work done in the branch. You can also
+  include other information in the branch name, such as who created the branch.
 
-## Name
-Choose a self-explaining name for your project.
+* Some suggestions for naming your feature branches:
+    - users/username/description
+    - users/username/workitem
+    - bugfix/description
+    - feature/feature-name
+    - feature/feature-area/feature-name
+    - hotfix/description
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+#### Use release branches
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+* Create a release branch from the main branch when you get close to your release or other milestone, such as the end of
+  a sprint. Give this branch a clear name associating it with the release, for example release/20.
+* Create branches to fix bugs from the release branch and merge them back into the release branch in a pull request
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+<p align="left"><img src="./releasebranching_release.png" width="360"></p>
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Installing and Development
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Development run
+```bash
+task dev
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### Running the tests
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+#### Unit Testing
+```bash
+task test
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+#### Code Linter
+```bash
+task lint
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Deployment
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### Built With
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+* [chi](https://github.com/go-chi/chi) lightweight, idiomatic and composable router for building Go HTTP services.
+* [ent.](https://entgo.io/) An entity framework for Go,
+* [openTelemetry](https://opentelemetry.io/) High-quality, ubiquitous, and portable telemetry to enable effective observability.
+* [zerolog](https://github.com/rs/zerolog) Zero Allocation JSON Logger.
+### Authors
 
-## License
-For open source projects, say how it is licensed.
+* *Nanang Suryadi* - Creator and Initial work - [@Suryakencana07](github.com/suryakencana007)
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+See also the list of [contributors](CONTRIBUTORS) who participated in this project.
+
+### License
+
+This project under the Apache License - see the [LICENSE](LICENSE) file for details.
