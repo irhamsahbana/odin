@@ -1,0 +1,5 @@
+module: gitlab.playcourt.id/nanang_suryadi/odin
+project: odin
+description: Codebase golang boilerplate generate from Ymir CLI.
+domains:
+adapter_orm:

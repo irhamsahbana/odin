@@ -1,0 +1,17 @@
+App:
+  environment: development
+  serviceName: odin
+
+Ports:
+  grpc: 5000
+  http: 8007
+  https: 8003
+  metric: 9097
+
+Server:
+  timeout: 10s
+
+Telemetry:
+  collector_enable: true
+  collector_debug: false
+  collector_grpc_addr: localhost:4317
