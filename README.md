@@ -76,19 +76,19 @@ inexpensive to create and maintain. Even small fixes and changes should have the
 
 ### Development run
 ```bash
-task dev
+$ task dev
 ```
 
 ### Running the tests
 
 #### Unit Testing
 ```bash
-task test
+$ task test
 ```
 
 #### Code Linter
 ```bash
-task lint
+$ task lint
 ```
 
 ### Deployment
@@ -101,7 +101,7 @@ task lint
 * [zerolog](https://github.com/rs/zerolog) Zero Allocation JSON Logger.
 ### Authors
 
-* *Nanang Suryadi* - Creator and Initial work - [@Suryakencana07](github.com/suryakencana007)
+* *Nanang Suryadi* - Creator and Initial work - [@Suryakencana07](https://github.com/suryakencana007)
 
 See also the list of [contributors](CONTRIBUTORS) who participated in this project.
 
