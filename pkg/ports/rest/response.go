@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,39 +11,30 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type ctxStatusCodeKey struct {
-	Name string
-}
+// ResponseType - Custom type to hold value for find and replace on context value response type.
+type ResponseType int
 
-// String - print context value.
-func (r *ctxStatusCodeKey) String() string {
-	return "context value " + r.Name
-}
-
-type ctxPayloadKey struct {
-	Name string
-}
-
-func (r *ctxPayloadKey) String() string {
-	return "context value " + r.Name
-}
-
-type ctxVersionKey struct {
-	Name string
-}
-
-func (r *ctxVersionKey) String() string {
-	return "context value " + r.Name
-}
-
-var (
-	// CtxVersion context key value for http status code.
-	CtxVersion = ctxVersionKey{Name: "context version"}
-	// CtxPayload context key value for http status code.
-	CtxPayload = ctxPayloadKey{Name: "context payload"}
-	// CtxStatusCode context key value for http status code.
-	CtxStatusCode = ctxStatusCodeKey{Name: "context status code"}
+// Declare related constants for each ResponseType starting with index 1.
+const (
+	CtxPagination ResponseType = iota
+	CtxVersion
+	CtxPayload
+	CtxStatusCode
 )
+
+func (r ResponseType) String() string {
+	return [...]string{
+		"pagination-key",
+		"version-key",
+		"payload-key",
+		"status-code-key",
+	}[r]
+}
+
+// Index - Return index of the Constant.
+func (r ResponseType) Index() int {
+	return int(r)
+}
 
 // Meta holds the response definition for the Meta entity.
 type Meta struct {
@@ -102,4 +94,9 @@ func JSON(next http.HandlerFunc) http.HandlerFunc {
 		}
 		http.Error(w, fmt.Errorf("payload cannot cast to response").Error(), http.StatusNotImplemented)
 	}
+}
+
+// Paging send a Pagination data.
+func Paging(r *http.Request, p Pagination) {
+	*r = *r.WithContext(context.WithValue(r.Context(), CtxPagination, p))
 }

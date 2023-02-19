@@ -15,6 +15,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 
+	transport "gitlab.playcourt.id/nanang_suryadi/odin/pkg/api/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared"
@@ -106,6 +107,8 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 
 	h.Handler(rest.Routes().Register(
 		func(c chi.Router) http.Handler {
+			helloTransport := &transport.Hello{}
+			helloTransport.Register(c)
 			return c
 		},
 	))

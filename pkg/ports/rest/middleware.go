@@ -31,8 +31,11 @@ func HandlerAdapter[ResponseType ResponseConstraint](a Adapter[ResponseType]) ht
 			response.Version = ver
 		}
 		payload, err := a(w, r)
-		code, _ := r.Context().Value(CtxStatusCode).(int)
 		if err != nil {
+			code, ok := r.Context().Value(CtxStatusCode).(int)
+			if !ok || code < 1 {
+				code = http.StatusInternalServerError
+			}
 			w.Header().Set(ContentType.String(), ApplicationJSON.String())
 			w.Header().Set(XContentTypOptions.String(), "nosniff")
 			response.Meta = Meta{
@@ -50,6 +53,9 @@ func HandlerAdapter[ResponseType ResponseConstraint](a Adapter[ResponseType]) ht
 				return
 			}
 			return
+		}
+		if pagination, ok := r.Context().Value(CtxPagination).(Pagination); ok {
+			response.Pagination = pagination
 		}
 		response.Data = payload
 		*r = *r.WithContext(context.WithValue(r.Context(), CtxPayload, response))
