@@ -18,7 +18,7 @@ before_script:
   except:
     refs:
       - tags
-      - master
+#      - master
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[skip[ _-]tests?\]/i
       - $SKIP_TESTS
