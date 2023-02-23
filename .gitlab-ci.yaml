@@ -1,0 +1,40 @@
+image: golangci/golangci-lint:v1.51-alpine
+
+# Cache modules in between jobs
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - /go/src/github.com
+    - /go/src/golang.org
+    - /go/src/google.golang.org
+    - /go/src/gopkg.in
+    - tests/mocks
+
+before_script:
+  - go get github.com/go-task/task/v3/cmd/task@v3.21.0
+
+.test-template: &test-template
+  stage: tests
+  except:
+    refs:
+      - tags
+      - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[skip[ _-]tests?\]/i
+      - $SKIP_TESTS
+
+stages:
+  - lint
+  - test
+
+unit_tests:
+  <<: *test-template
+  stage: test
+  script:
+    - task test
+
+lint_code:
+  <<: *test-template
+  stage: lint
+  script:
+    - task lint
