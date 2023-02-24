@@ -2,6 +2,7 @@
 package rest
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -29,6 +30,7 @@ func (h *Hello) Register(router chi.Router) {
 // World - endpoint func.
 func (*Hello) World(_ http.ResponseWriter, r *http.Request) (ResponseWorld, error) {
 	ctx := r.Context()
+	log.Error().Err(fmt.Errorf("ini sebuah kesalahan")).Msg("handler World")
 	span := trace.SpanFromContext(ctx)
 	defer span.End()
 	l := log.Hook(valkyrie.TraceContextHook(ctx))

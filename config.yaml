@@ -1,5 +1,5 @@
 App:
-  environment: development
+  environment: staging
   serviceName: odin
 
 Ports:

@@ -1,4 +1,4 @@
-// Package infrastructure is implements an adapter to talks low-level modules.
+// Package infrastructure is implements an adapter to talk to low-level modules.
 package infrastructure
 
 import (

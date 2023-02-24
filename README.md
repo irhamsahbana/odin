@@ -75,6 +75,7 @@ inexpensive to create and maintain. Even small fixes and changes should have the
 ### Installing and Development
 
 ### Development run
+
 ```bash
 $ task dev
 ```
@@ -82,11 +83,13 @@ $ task dev
 ### Running the tests
 
 #### Unit Testing
+
 ```bash
 $ task test
 ```
 
 #### Code Linter
+
 ```bash
 $ task lint
 ```
@@ -97,13 +100,18 @@ $ task lint
 
 * [chi](https://github.com/go-chi/chi) lightweight, idiomatic and composable router for building Go HTTP services.
 * [ent.](https://entgo.io/) An entity framework for Go,
-* [openTelemetry](https://opentelemetry.io/) High-quality, ubiquitous, and portable telemetry to enable effective observability.
+* [openTelemetry](https://opentelemetry.io/) High-quality, ubiquitous, and portable telemetry to enable effective
+  observability.
 * [zerolog](https://github.com/rs/zerolog) Zero Allocation JSON Logger.
+
 ### Authors
 
 * *Nanang Suryadi* - Creator and Initial work - [@Suryakencana07](https://github.com/suryakencana007)
 
-See also the list of [contributors](CONTRIBUTORS) who participated in this project.
+See also the list of [maintainer](MAINTAINER) who participated in this project.
+
+### Contributing
+See also the guide to [contributing](CONTRIBUTING).
 
 ### License
 
