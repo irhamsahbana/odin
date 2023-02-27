@@ -171,7 +171,7 @@ easy.
 
 Diagram Flow CI
 
-<p><img src="./ci-runner.png" width="480"></p>
+<p><img src="./ci-runner.png" width="720"></p>
 
 ```mermaid
    gitGraph
