@@ -172,7 +172,7 @@ easy.
 Diagram Flow CI
 
 ```mermaid
-gitGraph
+   gitGraph
     commit id: "feat/add-ci-config" tag: "Pipeline"
     branch add-ci-config
     checkout add-ci-config
