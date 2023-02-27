@@ -1,11 +1,24 @@
 # RFC: Odin Skeleton Boilerplate Project Structure.
----------------------------------------------------
 
-| Authors:           | Nanang Suryadi     |
+| Title              | Subject            |
 |--------------------|--------------------|
+| Authors:           | Nanang Suryadi     |
 | To be reviewed by: |                    |
 | Revisit Date:      |                    |
 | State:             | Feedback Requested |
+
+## TL;DR:
+
+### TODOS:
+* [ ] project layout
+* [x] routing - [chi](https://github.com/go-chi/chi)
+* [ ] adapters - Mysql, Sqlite and Postgresql - [ent.](https://entgo.io/)
+* [x] api rest
+* [ ] api grpc
+* [x] logging - [zerolog](https://github.com/rs/zerolog)
+* [x] tracing - [openTelemetry](https://opentelemetry.io/)
+* [x] metric - [openTelemetry](https://opentelemetry.io/)
+* [x] graceful service degradation [shutdown](https://gitlab.playcourt.id/nanang_suryadi/odin/-/blob/master/pkg/shared/shutdown.go#L15)
 
 ### Need
 
@@ -22,9 +35,11 @@ Each team has a different layout project. We must define layout and gameplay whe
 ### Approach
 
 #### Define standard project layout.
+
 We can discuss the structure and decide to implement and adopt it for Backend Engineer.
 
 *Here structure of the layout.*
+
 ```
 .
 +-- cmd
@@ -92,8 +107,10 @@ We can discuss the structure and decide to implement and adopt it for Backend En
 
 Basic observability is in the infrastructure package.
 
-* Logging using zerolog
 * Middleware - for rest middleware tracing is custom-built in shared\tracer package.
+* Logging using zerolog
+
+Logging Format 
 
 | Usage                                                                      | Stage       | Format                                                                                                                                                                                                                                                                                                                                                                                                          |
 |----------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -103,37 +120,79 @@ Basic observability is in the infrastructure package.
 
 #### Error handling.
 
+* http error status code
+
+```go
+package rest
+
+import "fmt"
+
+// ErrBadRequest error http StatusBadRequest.
+func ErrBadRequest(w http.ResponseWriter, r *http.Request, err error) error {
+  *r = *r.WithContext(context.WithValue(r.Context(), CtxStatusCode, http.StatusBadRequest))
+  w.Header().Set("X-Content-Type-Options", "nosniff")
+  w.WriteHeader(http.StatusBadRequest)
+  return err
+}
+
+// http handler
+func handler(w http.ResponseWriter, r *http.Request) error {
+  return rest.ErrBadRequest(w, r, fmt.Errorf("terjadi kesalahan di request"))
+} 
+```
+
 #### Basic library.
 
-* Routing Handle on REST using [chi](https://github.com/go-chi/chi) *lightweight, idiomatic and composable router for building Go HTTP services.*
+* Routing Handle on REST using [chi](https://github.com/go-chi/chi) *lightweight, idiomatic and composable router for
+  building Go HTTP services.*
 * ORM Schema generator using  [ent.](https://entgo.io/) *An entity framework for Go.*
-* Observability using [openTelemetry](https://opentelemetry.io/) High-quality, ubiquitous, and portable telemetry to enable effective
+* Observability using [openTelemetry](https://opentelemetry.io/) High-quality, ubiquitous, and portable telemetry to
+  enable effective
   observability.
 * Logging handler using [zerolog](https://github.com/rs/zerolog) Zero Allocation JSON Logger.
 
-
 #### Conventional Commits and merge request standard.
-For conventional commits, we can adopt https://www.conventionalcommits.org. golang helper we should use [git-chglog](https://github.com/git-chglog/git-chglog) to generate changelog (CHANGELOG.md) before merging to release branch.
+
+For conventional commits, we can adopt https://www.conventionalcommits.org. golang helper we should
+use [git-chglog](https://github.com/git-chglog/git-chglog) to generate changelog (CHANGELOG.md) before merging to
+release branch.
 
 #### Lint and Unit Testing.
 
+* For Go Linter using [golanci-lint](https://golangci-lint.run/usage/install/) .
+* For Unit Testing can be used built-in test package.
 
 ### Benefits
-With this standard, it is hoped that it can be applied to all backend golang codebases and makes the onboarding process easy.
+
+With this standard, it is hoped that it can be applied to all backend golang codebases and makes the onboarding process
+easy.
+
+### Runner CI
+
+Diagram Flow CI
+
+```mermaid
+gitGraph
+    commit id: "feat/add-ci-config" tag: "Pipeline"
+    branch add-ci-config
+    checkout add-ci-config
+    commit id: "lint2" tag: "lint"
+    commit id: "test2" tag: "test" type:REVERSE
+    checkout main
+    commit id: "add-ci-work" tag: "Pipeline"
+    branch add-ci-work
+    checkout add-ci-work
+    commit id: "lint1" tag: "lint"
+    commit id: "test1" tag: "test"
+    checkout main
+    merge add-ci-work tag: "MR"
+    commit id: "coverage1" tag: "coverage"
+    commit id: "build1" tag: "build"
+    commit id: "pass1" tag: "passed" type:HIGHLIGHT
+```
 
 ### Reference:
+
 * https://gitlab.playcourt.id/nanang_suryadi/odin
 * https://github.com/git-chglog/git-chglog
-
-
-### TODOS:
-* [ ] project layout
-* [x] routing - [chi](https://github.com/go-chi/chi)
-* [ ] adapters - Mysql, Sqlite and Postgresql - [ent.](https://entgo.io/)
-* [x] api rest
-* [ ] api grpc
-* [x] logging - [zerolog](https://github.com/rs/zerolog)
-* [x] tracing - [openTelemetry](https://opentelemetry.io/)
-* [x] metric - [openTelemetry](https://opentelemetry.io/)
-* [x] graceful service degradation [shutdown](https://gitlab.playcourt.id/nanang_suryadi/odin/-/blob/master/pkg/shared/shutdown.go#L15)
 
