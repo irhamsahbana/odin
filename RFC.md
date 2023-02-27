@@ -171,6 +171,8 @@ easy.
 
 Diagram Flow CI
 
+<p><img src="./ci-runner.png" width="480"></p>
+
 ```mermaid
    gitGraph
     commit id: "feat/add-ci-config" tag: "Pipeline"
