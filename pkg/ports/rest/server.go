@@ -17,7 +17,7 @@ var (
 	ErrServerNotStarted = errors.New("server not started")
 	// ErrServerAlreadyStarted is define error when server already started.
 	ErrServerAlreadyStarted = errors.New("server already started")
-	// ErrServerHandlerNotProvided is define error when server handlernot provided.
+	// ErrServerHandlerNotProvided is define error when server handler not provided.
 	ErrServerHandlerNotProvided = errors.New("server handler not provided")
 )
 

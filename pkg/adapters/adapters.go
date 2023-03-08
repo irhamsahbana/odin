@@ -7,11 +7,12 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog/log"
 )
 
 type client interface {
-	*sql.Driver | *http.Client
+	*sql.Driver | *http.Client | *resty.Client
 }
 
 // Driver - interface adapter.

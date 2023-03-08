@@ -2,8 +2,10 @@
 
 version: '3'
 
+includes:
 tasks:
   dev:
+    deps:
     cmds:
       - go run ./cmd/bin/main.go
 

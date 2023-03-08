@@ -8,6 +8,7 @@ require (
 	github.com/fatih/color v1.14.1
 	github.com/felixge/httpsnoop v1.0.3
 	github.com/go-chi/chi/v5 v5.0.8
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/kubuskotak/valkyrie v0.2.2
 	github.com/mattn/go-sqlite3 v1.14.16

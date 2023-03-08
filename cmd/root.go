@@ -123,11 +123,13 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 		log.Info().Dur("timeout", infrastructure.Envs.Server.Timeout).Msg("Shutting down HTTP/HTTPS server")
 
 		// open-telemetry
-		if err := cleanupTracer(context.Background()); err != nil {
-			log.Error().Err(err).Msg("tracer provider server is failed shutdown")
-		}
-		if err := cleanupMetric(context.Background()); err != nil {
-			log.Error().Err(err).Msg("metric provider server is failed shutdown")
+		if infrastructure.Envs.Telemetry.CollectorEnable {
+			if err := cleanupTracer(context.Background()); err != nil {
+				log.Error().Err(err).Msg("tracer provider server is failed shutdown")
+			}
+			if err := cleanupMetric(context.Background()); err != nil {
+				log.Error().Err(err).Msg("metric provider server is failed shutdown")
+			}
 		}
 
 		// rest
