@@ -6,15 +6,16 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kubuskotak/valkyrie"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/tracer"
 )
 
 // InitializeLogger will set logging format.
 func InitializeLogger() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	writer := &valkyrie.ZeroWriter{MinLevel: zerolog.DebugLevel}
+	writer := &tracer.ZeroWriter{MinLevel: zerolog.DebugLevel}
 	log.Logger = zerolog.New(
 		zerolog.MultiLevelWriter(os.Stdout, writer)).
 		With().Timestamp().Caller().Logger()

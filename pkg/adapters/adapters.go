@@ -26,6 +26,7 @@ type Driver[T client] interface {
 type Adapter struct {
 	HelloSqlite *sql.Driver
 	HelloMysql  *sql.Driver
+	PokemonRest *resty.Client
 }
 
 // Option is Adapter type return func.

@@ -15,6 +15,7 @@ var HelloSqliteOpen = sql.Open // HelloSqliteOpen will invoke to test case.
 
 // HelloSqlite is data of instances.
 type HelloSqlite struct {
+	File   string `json:"file"`
 	driver *sql.Driver
 }
 
@@ -29,11 +30,14 @@ func (h *HelloSqlite) Open() (*sql.Driver, error) {
 // Connect is connected the connection of sqlite.
 func (h *HelloSqlite) Connect() (err error) {
 	h.driver, err = HelloSqliteOpen(dialect.SQLite,
-		"sqlite://../.data/hello.migration.db?_fk=1")
+		h.File)
 	if err != nil {
 		log.Error().Err(err).Msg("HelloSqliteOpen is failed to open")
 		return err
 	}
+	pool := h.driver.DB()
+	pool.SetMaxOpenConns(1)
+
 	return nil
 }
 

@@ -11,7 +11,14 @@ Ports:
 Server:
   timeout: 10s
 
+DB:
+  max_open_cons: 5
+  max_idle_cons: 1
+
 Telemetry:
   collector_enable: true
   collector_debug: false
   collector_grpc_addr: localhost:4317
+
+Sqlite:
+  file: "sqlite://../.data/hello.migration.db?_fk=1"

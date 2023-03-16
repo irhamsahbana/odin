@@ -15,10 +15,13 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/adapters"
 	transport "gitlab.playcourt.id/nanang_suryadi/odin/pkg/api/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared"
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase"
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase/pokemon"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/version"
 )
 
@@ -98,6 +101,16 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 		} // tracing exporter
 		cleanupMetric = infrastructure.InitMetric(metricExp)
 	}
+	// adaptor block
+	adaptor := &adapters.Adapter{}
+	adaptor.Sync(
+		adapters.WithPokemon(&adapters.PokemonAPI{URL: infrastructure.Envs.Pokemon.API}),
+	)
+	// usecase block
+	pk, err := usecase.Get[pokemon.T](adaptor)
+	if err != nil {
+		return err
+	}
 
 	var errCh chan error
 
@@ -107,7 +120,9 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 
 	h.Handler(rest.Routes().Register(
 		func(c chi.Router) http.Handler {
-			helloTransport := &transport.Hello{}
+			helloTransport := &transport.Hello{
+				Pokemon: pk,
+			}
 			helloTransport.Register(c)
 			return c
 		},

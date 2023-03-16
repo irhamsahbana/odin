@@ -1,46 +1,45 @@
 package adapters
 
 import (
-	"database/sql"
 	"testing"
 
 	sqlEnt "entgo.io/ent/dialect/sql"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
+
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
 )
 
-func TestAdapter(t *testing.T) {
+func TestWithHelloSqlite(t *testing.T) {
 	is := assert.New(t)
+
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		is.Failf("failed to open stub db", "%v", err)
 	}
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			is.Error(err)
-		}
-	}(db)
 
 	is.NotNil(db, "mock db is null")
 	is.NotNil(mock, "sqlmock is null")
 
-	HelloMysqlOpen = func(dialect, source string) (*sqlEnt.Driver, error) {
-		return sqlEnt.NewDriver(dialect, sqlEnt.Conn{ExecQuerier: db}), nil
-	}
 	HelloSqliteOpen = func(dialect, source string) (*sqlEnt.Driver, error) {
 		return sqlEnt.NewDriver(dialect, sqlEnt.Conn{ExecQuerier: db}), nil
 	}
 
+	infrastructure.Configuration(
+		infrastructure.WithPath("../.."),
+		infrastructure.WithFilename("config.yaml"),
+	).Initialize()
+
 	adapter := &Adapter{}
 	adapter.Sync(
-		WithHelloMysql(&HelloMysql{}),
-		WithHelloSqlite(&HelloSqlite{}),
+		WithHelloSqlite(&HelloSqlite{
+			File: infrastructure.Envs.Sqlite.File,
+		}),
 	)
 
-	// Asserts
 	mock.ExpectClose()
 
+	// Asserts
 	is.Nil(adapter.UnSync())
 	is.Nil(mock.ExpectationsWereMet())
 }

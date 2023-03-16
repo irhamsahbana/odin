@@ -5,8 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kubuskotak/valkyrie"
 	"github.com/rs/zerolog/log"
+
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/config"
 )
 
 // Development is debugging the constant.
@@ -33,6 +34,25 @@ type Config struct {
 		CollectorDebug    bool   `yaml:"collector_debug" env:"COLLECTOR_DEBUG" env-description:"exporter debug collector"`
 		CollectorGrpcAddr string `yaml:"collector_grpc_addr" env:"COLLECTOR_GRPC_ADDR" env-description:"exporter addr tracing monitoring"`
 	} `yaml:"Telemetry"`
+	Mysql struct {
+		Database string `yaml:"database" env:"MYSQL_DATABASE" env-description:"database name"`
+		User     string `yaml:"user" env:"MYSQL_USER" env-description:"database user"`
+		Password string `yaml:"password" env:"MYSQL_PASSWORD" env-description:"database password"`
+		Host     string `yaml:"host" env:"MYSQL_HOST" env-description:"database host"`
+		Port     uint16 `yaml:"port" env:"MYSQL_PORT" env-description:"database port"`
+	} `yaml:"Mysql"`
+	Sqlite struct {
+		File string `yaml:"file"`
+	} `yaml:"Sqlite"`
+	DB struct {
+		ConnectionTimeout int `yaml:"connection_timeout" env:"CONN_TIMEOUT" env-description:"database timeout"`
+		MaxOpenCons       int `yaml:"max_open_cons" env:"MAX_OPEN_CONS" env-description:"database max open conn"`
+		MaxIdleCons       int `yaml:"max_idle_cons" env:"MAX_IDLE_CONS" env-description:"database max idle conn"`
+		ConnMaxLifetime   int `yaml:"conn_max_lifetime" env:"CONN_MAX_LIFETIME" env-description:"database max lifetime"`
+	} `yaml:"DB"`
+	Pokemon struct {
+		API string `yaml:"API" env:"POKEMON_API" env-description:"pokemon api"`
+	} `yaml:"Pokemon"`
 }
 
 var (
@@ -66,7 +86,7 @@ func Configuration(opts ...Option) *Configure {
 func (c *Configure) Initialize() {
 	once.Do(func() {
 		Envs = &Config{}
-		if err := valkyrie.Config(valkyrie.ConfigOpts{
+		if err := config.Load(config.Opts{
 			Config:    Envs,
 			Paths:     []string{c.path},
 			Filenames: []string{c.filename},
