@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/trace"
 
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/entity"
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/tracer"
 )
 

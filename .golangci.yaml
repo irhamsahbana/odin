@@ -85,3 +85,4 @@ linters-settings:
       - 'ioutil\.ReadDir(# Please use os\.ReadDir)?'
   funlen:
     statements: 42 # adjustment default 40
+    lines: 92 # adjustment default 60

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,8 +21,12 @@ func ExampleTraceContextHook() {
 
 func TestTraceContextHookNothing(t *testing.T) {
 	var buf bytes.Buffer
-	logger := zerolog.New(&buf).Hook(TraceContextHook(context.Background()))
-	logger.Info().Msg("message")
+	writer := &ZeroWriter{MinLevel: zerolog.DebugLevel}
+	log.Logger = zerolog.New(
+		zerolog.MultiLevelWriter(&buf, writer)).
+		With().Caller().Logger()
 
-	require.Equal(t, "{\"level\":\"info\",\"message\":\"message\"}\n", buf.String())
+	l := log.Hook(TraceContextHook(context.Background()))
+	l.Info().Msg("test")
+	require.Equal(t, "{\"level\":\"info\",\"caller\":\"C:/Users/nanan/Documents/Projects/Telkom/repos/odin/pkg/shared/tracer/log_test.go:30\",\"message\":\"test\"}\n", buf.String())
 }

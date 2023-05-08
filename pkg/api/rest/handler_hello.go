@@ -9,8 +9,9 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/trace"
 
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
+
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/entity"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/tracer"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase/pokemon"
 )
@@ -27,8 +28,8 @@ type ResponseWorld struct {
 
 // Register is endpoint group for handler.
 func (h *Hello) Register(router chi.Router) {
-	router.Get("/hello", rest.JSON(rest.HandlerAdapter[ResponseWorld](h.World)))
-	router.Get("/pokemon", rest.JSON(rest.HandlerAdapter[ResponseFetchPokemon](h.FetchPokemon)))
+	router.Get("/hello", rest.HandlerAdapter[ResponseWorld](h.World).JSON)
+	router.Get("/pokemon", rest.HandlerAdapter[ResponseFetchPokemon](h.FetchPokemon).JSON)
 }
 
 // World - endpoint func.

@@ -3,9 +3,14 @@
 version: '3'
 
 includes:
+
+dotenv:
+  - .env
+
 tasks:
   dev:
     deps:
+      - go:generate
     cmds:
       - go run ./cmd/bin/main.go
 
@@ -29,26 +34,10 @@ tasks:
   go:generate:
     desc: go generate all
     cmds:
+      - go mod tidy
       - go generate ./...
-
-  go:schema:
-    desc: create module ent schema
-    cmds:
-      - go run -mod=mod entgo.io/ent/cmd/ent new --target {{.TARGET}} {{.SCHEMA}}
-
-  migrate:diff:mysql:
-    deps: [ go:generate ]
-    desc: e.g migrate:diff:mysql -- -n add_column_article -s 'mysql://root:root1234@localhost:33067/testone'
-    cmds:
-      - go run ./cmd/bin/main.go migrate --dialect mysql {{.CLI_ARGS}}
-
-  migrate:diff:sqlite:
-    deps: [ go:generate ]
-    desc: e.g migrate:diff:sqlite -- -n {{.TITLE}}
-    cmds:
-      - go run ./cmd/bin/main.go migrate {{.CLI_ARGS}}
 
   git:delete:tag:
     desc: git delete tag
     cmds:
-      - git tag --delete {{.VERSION}}
+      - git tag --delete <no value>

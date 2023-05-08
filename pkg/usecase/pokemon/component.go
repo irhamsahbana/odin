@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/adapters"
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/entity"
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase"
 )
 

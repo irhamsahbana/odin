@@ -43,11 +43,10 @@ func newMigrateCmd() *cobra.Command {
 
 // Run is ent func to migrate.
 func (m *migrateOptions) Run(cmd *cobra.Command, _ []string) error {
-	var err error
 	switch m.Dialect {
 	case dialect.SQLite, dialect.MySQL:
+	    return nil
 	default:
 		return cmd.Usage()
 	}
-	return err
 }

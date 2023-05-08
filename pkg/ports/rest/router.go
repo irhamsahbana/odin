@@ -29,6 +29,7 @@ func (r *Router) Register(fn RegisterFunc) http.Handler {
 		infrastructure.Envs.App.ServiceName,
 		version.GetVersion().VersionNumber(),
 	))
+	r.h.NotFound(HandlerAdapter[ResponseNotFound](NotFoundDefault).JSON) // Not Found Handler
 	return fn(r.h)
 }
 

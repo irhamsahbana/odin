@@ -61,15 +61,14 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 		infrastructure.WithFilename(r.Filename),
 	).Initialize()
 	infrastructure.InitializeLogger()
-	info := color.New(color.BgHiRed, color.FgHiWhite).SprintFunc()
+	info := color.New(color.BgBlack, color.FgRed).SprintFunc()
 	fmt.Printf("%s\n", info(fmt.Sprintf(logo,
+		version.GetVersion().VersionNumber(),
 		infrastructure.Envs.Ports.HTTP,
 	)))
 	log.Info().Str("Stage", infrastructure.Envs.App.Environment).Msg("server running...")
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
 	// open-telemetry
 	var (
 		cleanupTracer infrastructure.TracerReturnFunc
@@ -101,11 +100,13 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 		} // tracing exporter
 		cleanupMetric = infrastructure.InitMetric(metricExp)
 	}
-	// adaptor block
+	/**
+	* Initialize Main
+	 */
 	adaptor := &adapters.Adapter{}
 	adaptor.Sync(
 		adapters.WithPokemon(&adapters.PokemonAPI{URL: infrastructure.Envs.Pokemon.API}),
-	)
+	) // adapters init
 	// usecase block
 	pk, err := usecase.Get[pokemon.T](adaptor)
 	if err != nil {
@@ -113,7 +114,9 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 	}
 
 	var errCh chan error
-
+	/**
+	* Initialize HTTP
+	 */
 	h := rest.NewServer(
 		rest.WithPort(strconv.Itoa(infrastructure.Envs.Ports.HTTP)),
 	)
@@ -132,11 +135,9 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 	}
 	errCh = h.Error()
 	// end http
-
 	stopCh := shared.SetupSignalHandler()
 	return shared.Graceful(stopCh, errCh, func(ctx context.Context) { // graceful shutdown
 		log.Info().Dur("timeout", infrastructure.Envs.Server.Timeout).Msg("Shutting down HTTP/HTTPS server")
-
 		// open-telemetry
 		if infrastructure.Envs.Telemetry.CollectorEnable {
 			if err := cleanupTracer(context.Background()); err != nil {
@@ -146,12 +147,15 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 				log.Error().Err(err).Msg("metric provider server is failed shutdown")
 			}
 		}
-
 		// rest
 		if err := h.Quite(context.Background()); err != nil {
 			log.Error().Err(err).Msg("http server is failed shutdown")
 		}
 		h.Stop()
+		// adapters
+		if err := adaptor.UnSync(); err != nil {
+			log.Error().Err(err).Msg("there is failed on UnSync adapter")
+		}
 	})
 }
 
