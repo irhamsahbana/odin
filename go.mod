@@ -13,6 +13,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gorilla/schema v1.2.0
 	github.com/ilyakaznacheev/cleanenv v1.2.6
+	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/oklog/ulid/v2 v2.0.2
 	github.com/rs/zerolog v1.29.0

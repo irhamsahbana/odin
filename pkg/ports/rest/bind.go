@@ -23,7 +23,7 @@ const (
 
 // decoderBody detects the correct decoderBody for use on an HTTP request and
 // marshals into a given interface.
-func decoderBody(r *http.Request, i interface{}) (err error) {
+func decoderBody(r *http.Request, i any) (err error) {
 	if r.ContentLength == 0 {
 		return nil
 	}
@@ -41,7 +41,7 @@ func decoderBody(r *http.Request, i interface{}) (err error) {
 }
 
 // DecodeJSON decodes a given reader into an interface using the json decoderBody.
-func DecodeJSON(r io.Reader, v interface{}) error {
+func DecodeJSON(r io.Reader, v any) error {
 	defer func(dst io.Writer, src io.Reader) {
 		_, err := io.Copy(dst, src)
 		if err != nil {
@@ -52,7 +52,7 @@ func DecodeJSON(r io.Reader, v interface{}) error {
 }
 
 // DecodeXML decodes a given reader into an interface using the xml decoderBody.
-func DecodeXML(r io.Reader, v interface{}) error {
+func DecodeXML(r io.Reader, v any) error {
 	defer func(dst io.Writer, src io.Reader) {
 		_, err := io.Copy(dst, src)
 		if err != nil {
@@ -63,7 +63,7 @@ func DecodeXML(r io.Reader, v interface{}) error {
 }
 
 // DecodeForm decodes a given reader into an interface using the form decoderBody.
-func DecodeForm(r *http.Request, v interface{}) error {
+func DecodeForm(r *http.Request, v any) error {
 	if strings.HasPrefix(r.Header.Get(HeaderContentType.String()), MIMEMultipartForm.String()) {
 		if err := r.ParseMultipartForm(defaultMemory); err != nil {
 			return err
@@ -118,7 +118,7 @@ func (b *Binder[T]) Validate() error {
 	return errors.Join(errs...)
 }
 
-func bindURLParams(ctx context.Context, v interface{}) error {
+func bindURLParams(ctx context.Context, v any) error {
 	urls := chi.RouteContext(ctx).URLParams
 	names := urls.Keys
 	values := urls.Values
@@ -130,7 +130,7 @@ func bindURLParams(ctx context.Context, v interface{}) error {
 	return decoding.Decode(v, params)
 }
 
-func bindQueryParams(r *http.Request, v interface{}) error {
+func bindQueryParams(r *http.Request, v any) error {
 	queries := r.URL.Query()
 	decoding := schema.NewDecoder()
 	return decoding.Decode(v, queries)

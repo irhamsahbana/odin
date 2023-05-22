@@ -50,9 +50,19 @@ type Config struct {
 		MaxIdleCons       int `yaml:"max_idle_cons" env:"MAX_IDLE_CONS" env-description:"database max idle conn"`
 		ConnMaxLifetime   int `yaml:"conn_max_lifetime" env:"CONN_MAX_LIFETIME" env-description:"database max lifetime"`
 	} `yaml:"DB"`
-	Pokemon struct {
-		API string `yaml:"API" env:"POKEMON_API" env-description:"pokemon api"`
-	} `yaml:"Pokemon"`
+	PokemonResty struct {
+		URL string `yaml:"URL" env:"POKEMON_RESTY_URL" env-description:"api url"`
+	} `yaml:"PokemonResty"`
+	PokemonRest struct {
+		URL string `yaml:"URL" env:"POKEMON_REST_URL" env-description:"api url"`
+	} `yaml:"PokemonRest"`
+	HelloPostgres struct {
+		Database string `yaml:"database" env:"HELLO_POSTGRES_DATABASE" env-description:"database name"`
+		User     string `yaml:"user" env:"HELLO_POSTGRES_USER" env-description:"database user"`
+		Password string `yaml:"password" env:"HELLO_POSTGRES_PASSWORD" env-description:"database password"`
+		Host     string `yaml:"host" env:"HELLO_POSTGRES_HOST" env-description:"database host"`
+		Port     uint16 `yaml:"port" env:"HELLO_POSTGRES_PORT" env-description:"database port"`
+	} `yaml:"HelloPostgres"`
 }
 
 var (

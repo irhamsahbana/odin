@@ -65,7 +65,7 @@ type recordingResponseWriter struct {
 }
 
 var rrwPool = &sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		return &recordingResponseWriter{}
 	},
 }

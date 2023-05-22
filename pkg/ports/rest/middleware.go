@@ -17,7 +17,7 @@ type Adapter[Response ResponseConstraint] func(w http.ResponseWriter, r *http.Re
 
 // HandlerAdapter is middleware handler to process error.
 func HandlerAdapter[ResponseType ResponseConstraint](a Adapter[ResponseType]) *Response[ResponseType] {
-	null := make(map[string]interface{})
+	null := make(map[string]any)
 	response := &Response[ResponseType]{
 		Version: Version{
 			Label:  "v1",

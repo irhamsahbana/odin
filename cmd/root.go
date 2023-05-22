@@ -37,7 +37,7 @@ func NewRootCmd() *cobra.Command {
 		Use:   "odin",
 		Short: "Codebase golang boilerplate generate from Ymir CLI.",
 		Long: GenerateTemplate(description,
-			map[string]interface{}{
+			map[string]any{
 				"BuildTime":  version.GetVersion().BuildDate,
 				"Version":    version.GetVersion().VersionNumber(),
 				"CommitHash": version.GetVersion().Revision,
@@ -105,7 +105,7 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 	 */
 	adaptor := &adapters.Adapter{}
 	adaptor.Sync(
-		adapters.WithPokemon(&adapters.PokemonAPI{URL: infrastructure.Envs.Pokemon.API}),
+		adapters.WithPokemonResty(&adapters.PokemonResty{URL: infrastructure.Envs.PokemonResty.URL}),
 	) // adapters init
 	// usecase block
 	pk, err := usecase.Get[pokemon.T](adaptor)

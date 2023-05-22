@@ -10,7 +10,7 @@ import (
 
 // Opts represents a setup options.
 type Opts struct {
-	Config    interface{}
+	Config    any
 	Paths     []string
 	Filenames []string
 }

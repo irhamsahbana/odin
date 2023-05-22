@@ -2,12 +2,9 @@
 package rest
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/rs/zerolog/log"
-	"go.opentelemetry.io/otel/trace"
 
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
 
@@ -34,11 +31,8 @@ func (h *Hello) Register(router chi.Router) {
 
 // World - endpoint func.
 func (*Hello) World(_ http.ResponseWriter, r *http.Request) (ResponseWorld, error) {
-	ctx := r.Context()
-	log.Error().Err(fmt.Errorf("ini sebuah kesalahan")).Msg("handler World")
-	span := trace.SpanFromContext(ctx)
+	_, span, l := tracer.StartSpanLogTrace(r.Context(), "{{$Handler}}")
 	defer span.End()
-	l := log.Hook(tracer.TraceContextHook(ctx))
 
 	l.Info().Str("Hello", "World").Msg("this")
 	rest.Paging(r, rest.Pagination{
@@ -60,13 +54,11 @@ type ResponseFetchPokemon struct {
 
 // FetchPokemon - endpoint func to get all pokemon.
 func (h *Hello) FetchPokemon(w http.ResponseWriter, r *http.Request) (ResponseFetchPokemon, error) {
-	ctx := r.Context()
-	span := trace.SpanFromContext(ctx)
+	ctx, span, l := tracer.StartSpanLogTrace(r.Context(), "{{$Handler}}")
 	defer span.End()
 
-	l := log.Hook(tracer.TraceContextHook(ctx))
-
 	result, err := h.Pokemon.GetAll(ctx)
+
 	if err != nil {
 		return ResponseFetchPokemon{}, rest.ErrBadRequest(w, r, err)
 	}

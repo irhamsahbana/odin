@@ -71,7 +71,7 @@ type Response[R ResponseConstraint] struct {
 	Meta       `json:"meta"`
 	Version    `json:"version"`
 	Pagination `json:"pagination,omitempty"`
-	Data       interface{} `json:"data,omitempty"`
+	Data       any `json:"data,omitempty"`
 	next       Adapter[R]
 }
 
@@ -111,7 +111,7 @@ func (e *Response[R]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // JSON sends a JSON response with status code.
 func (e *Response[R]) JSON(w http.ResponseWriter, r *http.Request) {
-	e.Data = make(map[string]interface{}) // reset data struct
+	e.Data = make(map[string]any) // reset data struct
 	e.ServeHTTP(w, r)
 	code, ok := r.Context().Value(CtxStatusCode).(int)
 	if !ok || code < 1 {
@@ -191,9 +191,9 @@ func (e *Response[R]) CSV(w http.ResponseWriter, r *http.Request) {
 
 // Paging send a Pagination data.
 func Paging(r *http.Request, p Pagination) {
-    if p.Limit > 0 {
-        p.Size = int(math.Round(float64(p.Total) / float64(p.Limit)))
-    }
+	if p.Limit > 0 {
+		p.Size = int(math.Round(float64(p.Total) / float64(p.Limit)))
+	}
 	*r = *r.WithContext(context.WithValue(r.Context(), CtxPagination, p))
 }
 

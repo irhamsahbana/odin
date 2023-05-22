@@ -23,7 +23,7 @@ type ErrorValidator struct {
 }
 
 // Validate returns ErrorValidator implements value validations for structs and individual fields based on tags.
-func Validate(s interface{}) (errors []ErrorValidator) {
+func Validate(s any) (errors []ErrorValidator) {
 	validate := validator.New()
 	_ = validate.RegisterValidation("date", DateValidation)
 	_ = validate.RegisterValidation("datetime", DatetimeValidation)

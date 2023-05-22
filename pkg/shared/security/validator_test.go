@@ -20,7 +20,7 @@ func TestValidate(t *testing.T) {
 	dto := []struct {
 		label string
 		in    DataTransferObject
-		out   interface{}
+		out   any
 	}{
 		{
 			"Test Validate Pass",

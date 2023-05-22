@@ -24,9 +24,11 @@ type Driver[T client] interface {
 
 // Adapter components for external sources.
 type Adapter struct {
-	HelloSqlite *sql.Driver
-	HelloMysql  *sql.Driver
-	PokemonRest *resty.Client
+	HelloSqlite   *sql.Driver
+	HelloMysql    *sql.Driver
+	PokemonResty  *resty.Client
+	PokemonRest   *http.Client
+	HelloPostgres *sql.Driver
 }
 
 // Option is Adapter type return func.
@@ -43,6 +45,12 @@ func (a *Adapter) Sync(opts ...Option) {
 // UnSync - release all adapter connection.
 func (a *Adapter) UnSync() error {
 	var errs []string
+	if a.HelloPostgres != nil {
+		log.Info().Msg("HelloPostgres is closed")
+		if err := a.HelloPostgres.Close(); err != nil {
+			errs = append(errs, err.Error())
+		}
+	}
 	if a.HelloMysql != nil {
 		log.Info().Msg("HelloMysql is closed")
 		if err := a.HelloMysql.Close(); err != nil {

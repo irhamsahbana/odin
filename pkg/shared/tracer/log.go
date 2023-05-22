@@ -158,8 +158,8 @@ type logRecord struct {
 	spanContext     trace.SpanContext
 }
 
-func (l *logRecord) decode(r io.Reader) (events map[string]interface{}, err error) {
-	m := make(map[string]interface{})
+func (l *logRecord) decode(r io.Reader) (events map[string]any, err error) {
+	m := make(map[string]any)
 	d := json.NewDecoder(r)
 	d.UseNumber()
 	if err := d.Decode(&m); err != nil {

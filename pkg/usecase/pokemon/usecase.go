@@ -18,7 +18,7 @@ func (i *impl) GetAll(ctx context.Context) (*entity.Resource, error) {
 	l := log.Hook(tracer.TraceContextHook(ctx))
 
 	pok := &entity.Resource{}
-	client := i.adapter.PokemonRest
+	client := i.adapter.PokemonResty
 	resp, err := client.R().SetResult(pok).Get("pokemon/")
 	if err != nil {
 		l.Error().Err(err).Msg("GetAll")

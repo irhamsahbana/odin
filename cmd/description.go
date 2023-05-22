@@ -29,7 +29,7 @@ Version: <no value>
 `
 
 // GenerateTemplate is the template parse func.
-func GenerateTemplate(usage string, data interface{}) string {
+func GenerateTemplate(usage string, data any) string {
 	tpl := template.New("GenerateTemplate")
 	gen, err := tpl.Parse(usage)
 	if err != nil {
