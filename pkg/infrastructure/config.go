@@ -41,9 +41,6 @@ type Config struct {
 		Host     string `yaml:"host" env:"MYSQL_HOST" env-description:"database host"`
 		Port     uint16 `yaml:"port" env:"MYSQL_PORT" env-description:"database port"`
 	} `yaml:"Mysql"`
-	Sqlite struct {
-		File string `yaml:"file"`
-	} `yaml:"Sqlite"`
 	DB struct {
 		ConnectionTimeout int `yaml:"connection_timeout" env:"CONN_TIMEOUT" env-description:"database timeout"`
 		MaxOpenCons       int `yaml:"max_open_cons" env:"MAX_OPEN_CONS" env-description:"database max open conn"`
@@ -63,6 +60,9 @@ type Config struct {
 		Host     string `yaml:"host" env:"HELLO_POSTGRES_HOST" env-description:"database host"`
 		Port     uint16 `yaml:"port" env:"HELLO_POSTGRES_PORT" env-description:"database port"`
 	} `yaml:"HelloPostgres"`
+	HelloSQLite struct {
+		File string `yaml:"file" env:"HELLO_SQLITE_FILE" env-description:"database file"`
+	} `yaml:"HelloSQLite"`
 }
 
 var (
