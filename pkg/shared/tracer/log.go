@@ -28,22 +28,23 @@ const (
 
 	// TraceIDFieldName is the field name for the trace ID.
 	TraceIDFieldName = "trace.id"
+
+	// CarrierID is the field name for the carrier propagator.
+	CarrierID = "carrier.id"
 )
 
 // TraceContextHook returns a zerolog.Hook that will add any trace context
 // contained in ctx to log events.
 func TraceContextHook(ctx context.Context) zerolog.Hook {
-	return traceContextHook{ctx}
+	return &traceContextHook{ctx: ctx}
 }
-
-var carrier http.Header
 
 type traceContextHook struct {
 	ctx context.Context
 }
 
-func (t traceContextHook) Run(e *zerolog.Event, level zerolog.Level, message string) {
-	carrier = http.Header{}
+func (t *traceContextHook) Run(e *zerolog.Event, level zerolog.Level, message string) {
+	carrier := http.Header{}
 	sc := trace.SpanFromContext(t.ctx).SpanContext()
 	if !sc.TraceID().IsValid() || !sc.SpanID().IsValid() {
 		return
@@ -56,6 +57,11 @@ func (t traceContextHook) Run(e *zerolog.Event, level zerolog.Level, message str
 	e.Str(TraceIDFieldName, sc.TraceID().String())
 	e.Str(SpanIDFieldName, sc.SpanID().String())
 	otel.GetTextMapPropagator().Inject(t.ctx, propagation.HeaderCarrier(carrier))
+	byteCarrier, err := json.Marshal(carrier)
+	if err != nil {
+		return
+	}
+	e.Bytes(CarrierID, byteCarrier)
 }
 
 type ZeroWriter struct {
@@ -94,7 +100,7 @@ func (w *ZeroWriter) WriteLevel(level zerolog.Level, p []byte) (int, error) {
 
 	if logRecord.spanContext.IsValid() {
 		ctx := otel.GetTextMapPropagator().Extract(
-			context.Background(), propagation.HeaderCarrier(carrier))
+			context.Background(), propagation.HeaderCarrier(logRecord.carrier))
 		tr := otel.Tracer("logger")
 		_, span := tr.Start(ctx, fmt.Sprintf("log.%s", level.String()))
 		defer span.End()
@@ -156,6 +162,7 @@ type logRecord struct {
 	timestamp       time.Time
 	traceId, spanId string
 	spanContext     trace.SpanContext
+	carrier         http.Header
 }
 
 func (l *logRecord) decode(r io.Reader) (events map[string]any, err error) {
@@ -205,6 +212,15 @@ func (l *logRecord) decode(r io.Reader) (events map[string]any, err error) {
 
 	if strVal, ok := m[TraceIDFieldName].(string); ok {
 		l.traceId = strVal
+	}
+
+	if b, ok := m[CarrierID].(string); ok {
+		var ch http.Header
+		err := json.Unmarshal([]byte(b), &ch)
+		if err != nil {
+			return events, err
+		}
+		l.carrier = ch
 	}
 	return m, nil
 }

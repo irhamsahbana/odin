@@ -8,9 +8,9 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
 	stdoutMetric "go.opentelemetry.io/otel/exporters/stdout/stdoutmetric"
-	"go.opentelemetry.io/otel/metric/global"
 	"go.opentelemetry.io/otel/sdk/metric"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -22,7 +22,7 @@ type MetricReturnFunc func(ctx context.Context) error
 // InitMetric create metric provider from collector exporter.
 func InitMetric(exporter metric.Exporter) MetricReturnFunc {
 	mp := metric.NewMeterProvider(metric.WithReader(metric.NewPeriodicReader(exporter)))
-	global.SetMeterProvider(mp)
+	otel.SetMeterProvider(mp)
 	return func(ctx context.Context) error {
 		return mp.Shutdown(ctx)
 	}
