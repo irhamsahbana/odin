@@ -104,9 +104,23 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 	* Initialize Main
 	 */
 	adaptor := &adapters.Adapter{}
-	adaptor.Sync(
-		adapters.WithPokemonResty(&adapters.PokemonResty{URL: infrastructure.Envs.PokemonResty.URL}),
-	) // adapters init
+
+	db := infrastructure.Envs.HelloMongo //define var for store config
+
+	adapterMongo := adapters.WithHelloMongo(&adapters.HelloMongo{
+		NetworkDB: adapters.NetworkDB{
+			Database: db.Database,
+			Host: db.Host,
+			Port: db.Port,
+			User: db.User,
+			Password: db.Password,
+			ConnectionTimeout: 10,
+		},
+	})
+	adapterPokemonResty := adapters.WithPokemonResty(&adapters.PokemonResty{URL: infrastructure.Envs.PokemonResty.URL})
+
+	adaptor.Sync(adapterMongo, adapterPokemonResty) // adapters init
+
 	// usecase block
 	pk, err := usecase.Get[pokemon.T](adaptor)
 	if err != nil {

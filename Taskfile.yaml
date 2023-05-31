@@ -11,6 +11,7 @@ tasks:
   dev:
     deps:
       - go:generate
+    desc: run dev server
     cmds:
       - go run ./cmd/bin/main.go
 
