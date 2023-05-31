@@ -63,6 +63,14 @@ type Config struct {
 	HelloSQLite struct {
 		File string `yaml:"file" env:"HELLO_SQLITE_FILE" env-description:"database file"`
 	} `yaml:"HelloSQLite"`
+	HelloMongo struct {
+		Database   string `yaml:"database" env:"HELLO_MONGO_DATABASE" env-description:"database name"`
+		User       string `yaml:"user" env:"HELLO_MONGO_USER" env-description:"database user"`
+		Password   string `yaml:"password" env:"HELLO_MONGO_PASSWORD" env-description:"database password"`
+		Host       string `yaml:"host" env:"HELLO_MONGO_HOST" env-description:"database host"`
+		Port       uint16 `yaml:"port" env:"HELLO_MONGO_PORT" env-description:"database port"`
+		AuthEnable bool   `yaml:"auth_enable" env:"HELLO_MONGO_AUTH_ENABLE" env-description:"use authentication or not"`
+	} `yaml:"HelloMongo"`
 }
 
 var (

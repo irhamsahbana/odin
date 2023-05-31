@@ -2,6 +2,7 @@
 package adapters
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -9,10 +10,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog/log"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type client interface {
-	*sql.Driver | *http.Client | *resty.Client
+	*sql.Driver | *http.Client | *resty.Client | *mongo.Client
 }
 
 // Driver - interface adapter.
@@ -29,6 +31,7 @@ type Adapter struct {
 	PokemonRest   *http.Client
 	HelloPostgres *sql.Driver
 	HelloSQLite   *sql.Driver
+	HelloMongo    *mongo.Client
 }
 
 // Option is Adapter type return func.
@@ -60,6 +63,12 @@ func (a *Adapter) UnSync() error {
 	if a.HelloMysql != nil {
 		log.Info().Msg("HelloMysql is closed")
 		if err := a.HelloMysql.Close(); err != nil {
+			errs = append(errs, err.Error())
+		}
+	}
+	if a.HelloMongo != nil {
+		log.Info().Msg("HelloMongo is closed")
+		if err := a.HelloMongo.Disconnect(context.Background()); err != nil {
 			errs = append(errs, err.Error())
 		}
 	}
