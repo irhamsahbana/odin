@@ -45,7 +45,7 @@ func newMigrateCmd() *cobra.Command {
 func (m *migrateOptions) Run(cmd *cobra.Command, _ []string) error {
 	switch m.Dialect {
 	case dialect.SQLite, dialect.MySQL:
-	    return nil
+		return nil
 	default:
 		return cmd.Usage()
 	}

@@ -5,8 +5,7 @@ package adapters
 import (
 	"fmt"
 
-    "github.com/go-resty/resty/v2"
-
+	"github.com/go-resty/resty/v2"
 )
 
 // PokemonResty is data of instances.
@@ -47,4 +46,3 @@ func WithPokemonResty(driver Driver[*resty.Client]) Option {
 		a.PokemonResty = open
 	}
 }
-

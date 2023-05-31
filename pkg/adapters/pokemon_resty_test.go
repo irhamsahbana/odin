@@ -22,5 +22,3 @@ func TestWithPokemonResty(t *testing.T) {
 	// Asserts
 	is.Nil(adapter.UnSync())
 }
-
-

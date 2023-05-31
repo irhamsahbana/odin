@@ -109,11 +109,11 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 
 	adapterMongo := adapters.WithHelloMongo(&adapters.HelloMongo{
 		NetworkDB: adapters.NetworkDB{
-			Database: db.Database,
-			Host: db.Host,
-			Port: db.Port,
-			User: db.User,
-			Password: db.Password,
+			Database:          db.Database,
+			Host:              db.Host,
+			Port:              db.Port,
+			User:              db.User,
+			Password:          db.Password,
 			ConnectionTimeout: 10,
 		},
 	})

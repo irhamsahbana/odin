@@ -67,4 +67,3 @@ func WithHelloPostgres(driver Driver[*sqlEnt.Driver]) Option {
 		a.HelloPostgres = open
 	}
 }
-

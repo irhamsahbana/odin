@@ -86,4 +86,3 @@ func WithHelloSQLite(driver Driver[*sqlEnt.Driver]) Option {
 		a.HelloSQLite = open
 	}
 }
-

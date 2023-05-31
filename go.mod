@@ -1,6 +1,6 @@
 module gitlab.playcourt.id/nanang_suryadi/odin
 
-go 1.19
+go 1.20
 
 require (
 	entgo.io/ent v0.12.3
@@ -17,7 +17,7 @@ require (
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/rs/zerolog v1.29.1
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	go.mongodb.org/mongo-driver v1.11.6
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0
 	go.opentelemetry.io/otel v1.16.0
