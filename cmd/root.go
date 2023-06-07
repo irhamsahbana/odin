@@ -12,6 +12,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
+
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/adapters"
 	transport "gitlab.playcourt.id/nanang_suryadi/odin/pkg/api/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
@@ -21,8 +24,6 @@ import (
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase/pokemon"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase/users"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/version"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type rootOptions struct {
@@ -127,7 +128,7 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	users, err := usecase.Get[users.T](adaptor)
+	userCase, err := usecase.Get[users.T](adaptor)
 	if err != nil {
 		return err
 	}
@@ -146,12 +147,10 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 				Pokemon: pk,
 			}
 			helloTransport.Register(c)
-
 			mongoRest := &transport.MongoRest{
-				UsersUsecase: users,
+				UsersUsecase: userCase,
 			}
 			mongoRest.Register(c)
-
 			return c
 		},
 	))

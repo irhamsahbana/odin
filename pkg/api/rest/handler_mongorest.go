@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/tracer"
@@ -18,18 +19,17 @@ type MongoRest struct {
 
 // Register is endpoint group for handler.
 func (h *MongoRest) Register(router chi.Router) {
-	router.Get("/users", rest.HandlerAdapter[[]entity.User](h.GetAll).JSON)
-	router.Post("/user", rest.HandlerAdapter[entity.User](h.Create).JSON)
+	router.Get("/users", rest.HandlerAdapter(h.GetAll).JSON)
+	router.Post("/user", rest.HandlerAdapter(h.Create).JSON)
 }
 
 // GetAll user.
 func (h *MongoRest) GetAll(w http.ResponseWriter, r *http.Request) ([]entity.User, error) {
+	ctx, span, l := tracer.StartSpanLogTrace(r.Context(), "GetAll")
+	defer span.End()
 	var (
 		request entity.RequestGetUsers
 	)
-
-	ctx, span, l := tracer.StartSpanLogTrace(r.Context(), "{{$Handler}}")
-	defer span.End()
 
 	b, err := rest.Bind(r, &request)
 	if err != nil {
@@ -39,20 +39,23 @@ func (h *MongoRest) GetAll(w http.ResponseWriter, r *http.Request) ([]entity.Use
 		return nil, rest.ErrBadRequest(w, r, err)
 	}
 
-	documents, paging, err := h.UsersUsecase.Get(ctx, request)
+	documents, err := h.UsersUsecase.Get(ctx, request)
 	if err != nil {
 		return nil, rest.ErrBadRequest(w, r, err)
 	}
 
-	rest.Paging(r, paging)
+	rest.Paging(r, rest.Pagination{
+		Page:  documents.Page,
+		Limit: documents.Limit,
+	})
 
 	l.Info().Msg("GetUsers")
-	return documents, nil
+	return documents.Users, nil
 }
 
 // Create user.
 func (h *MongoRest) Create(w http.ResponseWriter, r *http.Request) (entity.User, error) {
-	ctx, span, l := tracer.StartSpanLogTrace(r.Context(), "{{$Handler}}")
+	ctx, span, l := tracer.StartSpanLogTrace(r.Context(), "Create")
 	defer span.End()
 
 	request := entity.User{}

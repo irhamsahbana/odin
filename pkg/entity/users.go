@@ -13,8 +13,19 @@ type User struct {
 	CreatedAt time.Time `bson:"created_at,omitempty" json:"created_at,omitempty"`
 }
 
+// Pagination represents a pagination in the collection.
+type Pagination struct {
+	Page  int `validate:"gte=0,default=1"`
+	Limit int `validate:"gte=0,default=10"`
+}
+
 // RequestGetUsers represents a parameter to get user with pagination in the collection.
 type RequestGetUsers struct {
-	Limit int `validate:"gte=0,default=10"`
-	Page  int `validate:"gte=0,default=1"`
+	Pagination `json:"pagination"`
+}
+
+// ResponseGetUsers represents a parameter to get user with pagination in the collection.
+type ResponseGetUsers struct {
+	Users      []User `json:"users"`
+	Pagination `json:"pagination"`
 }
