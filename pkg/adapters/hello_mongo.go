@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
 )
 
 // HelloMongo is data of instances.

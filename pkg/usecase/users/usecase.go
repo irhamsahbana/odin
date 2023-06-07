@@ -5,13 +5,14 @@ import (
 	"context"
 	"time"
 
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
 )
 
-func (i *impl) Get(ctx context.Context, request entity.RequestGetUsers) ([]entity.User, rest.Pagination, error) {
+func (i *impl) Get(ctx context.Context, request entity.RequestGetUsers) (result entity.ResponseGetUsers, err error) {
 	coll := i.adapter.PersistUsers.Collection("users")
 
 	skip := (request.Page - 1) * request.Limit
@@ -22,30 +23,30 @@ func (i *impl) Get(ctx context.Context, request entity.RequestGetUsers) ([]entit
 	findOptions.SetLimit(int64(request.Limit))
 
 	// pagination
-	pagination := rest.Pagination{
-		Page:  request.Page,
-		Limit: request.Limit,
-	}
-
-	cursor, err := coll.Find(ctx, bson.M{}, findOptions)
+	result.Limit = request.Limit
+	result.Page = request.Page
+	var cursor *mongo.Cursor
+	cursor, err = coll.Find(ctx, bson.M{}, findOptions)
 	if err != nil {
-		return nil, rest.Pagination{}, err
+		return result, err
 	}
-
-	defer cursor.Close(ctx)
+	defer func(c context.Context) {
+		err = cursor.Close(c)
+	}(ctx)
 
 	// Iterate through the cursor to get each document.
-	var documents []entity.User
+	var documents = make([]entity.User, 0)
 	for cursor.Next(ctx) {
 		var document entity.User
 		err := cursor.Decode(&document)
 		if err != nil {
-			return nil, rest.Pagination{}, err
+			return result, err
 		}
 		documents = append(documents, document)
 	}
 
-	return documents, pagination, nil
+	result.Users = documents
+	return result, nil
 }
 
 func (i *impl) Create(ctx context.Context, user entity.User) (entity.User, error) {

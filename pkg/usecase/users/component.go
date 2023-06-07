@@ -7,7 +7,6 @@ import (
 
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/adapters"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
-	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase"
 )
 
@@ -23,7 +22,7 @@ func init() {
 
 // T is the interface implemented by all users Component implementations.
 type T interface {
-	Get(ctx context.Context, paging entity.RequestGetUsers) ([]entity.User, rest.Pagination, error)
+	Get(ctx context.Context, paging entity.RequestGetUsers) (entity.ResponseGetUsers, error)
 	Create(ctx context.Context, user entity.User) (entity.User, error)
 }
 
