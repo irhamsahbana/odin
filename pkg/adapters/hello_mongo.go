@@ -66,5 +66,7 @@ func WithHelloMongo(driver Driver[*mongo.Client]) Option {
 		}
 
 		a.HelloMongo = open
+		// define connection to the database
+		a.PersistUsers = open.Database(driver.(*HelloMongo).Database)
 	}
 }

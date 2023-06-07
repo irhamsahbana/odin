@@ -32,6 +32,7 @@ type Adapter struct {
 	HelloPostgres *sql.Driver
 	HelloSQLite   *sql.Driver
 	HelloMongo    *mongo.Client
+	PersistUsers  *mongo.Database
 }
 
 // Option is Adapter type return func.
