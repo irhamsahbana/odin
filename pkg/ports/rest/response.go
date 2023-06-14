@@ -60,8 +60,8 @@ type Version struct {
 
 // Pagination holds the response definition for the Pagination entity.
 type Pagination struct {
-	Page  int `json:"page"`
-	Limit int `json:"per_page"`
+	Page  int `json:"page,omitempty"`
+	Limit int `json:"per_page,omitempty"`
 	Size  int `json:"page_count,omitempty"`
 	Total int `json:"total_count,omitempty"`
 }
@@ -133,9 +133,10 @@ func (e *Response[R]) JSON(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	w.WriteHeader(code)
-	_, err := w.Write(buf.Bytes())
-	if err != nil {
+
+	if _, err := w.Write(buf.Bytes()); err != nil {
 		log.Error().Err(ErrInternalServerError(w, r, err)).Msg("JSON")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -178,8 +179,8 @@ func (e *Response[R]) CSV(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(HeaderContentType.String(), MIMETextCSVCharsetUTF8.String())
 
 		w.WriteHeader(code)
-		_, err := w.Write(buf.Bytes())
-		if err != nil {
+
+		if _, err := w.Write(buf.Bytes()); err != nil {
 			w.Header().Set(HeaderContentTypeOptions.String(), "nosniff")
 			w.WriteHeader(http.StatusInternalServerError)
 			return

@@ -18,7 +18,7 @@ tasks:
   clean:
     desc: clean all temp project
     cmds:
-      - rm -rf ./tmp coverage.out
+      - rm -rf coverage.out
 
   lint:
     desc: go linter

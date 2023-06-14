@@ -19,6 +19,7 @@ import (
 
 const (
 	defaultMemory = 32 << 20 // 32 MB
+	wildcardPath  = "*"
 )
 
 // decoderBody detects the correct decoderBody for use on an HTTP request and
@@ -124,6 +125,10 @@ func bindURLParams(ctx context.Context, v any) error {
 	values := urls.Values
 	params := map[string][]string{}
 	for i, name := range names {
+		// skip wildcard key
+		if strings.EqualFold(wildcardPath, name) {
+			continue
+		}
 		params[name] = []string{values[i]}
 	}
 	decoding := schema.NewDecoder()
