@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/entity"
-
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared/tracer"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase/pokemon"

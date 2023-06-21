@@ -108,19 +108,20 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 
 	db := infrastructure.Envs.HelloMongo //define var for store config
 
-	adapterMongo := adapters.WithHelloMongo(&adapters.HelloMongo{
-		NetworkDB: adapters.NetworkDB{
-			Database: db.Database,
-			Host:     db.Host,
-			Port:     db.Port,
-			User:     db.User,
-			Password: db.Password,
-		},
-	})
-
-	adapterPokemonResty := adapters.WithPokemonResty(&adapters.PokemonResty{URL: infrastructure.Envs.PokemonResty.URL})
-
-	adaptor.Sync(adapterMongo, adapterPokemonResty) // adapters init
+	var (
+		adapterMongo = adapters.WithHelloMongo(&adapters.HelloMongo{
+			NetworkDB: adapters.NetworkDB{
+				Database: db.Database,
+				Host:     db.Host,
+				Port:     db.Port,
+				User:     db.User,
+				Password: db.Password,
+			},
+		})
+		adapterPokemonResty = adapters.WithPokemonResty(&adapters.PokemonResty{URL: infrastructure.Envs.PokemonResty.URL})
+		adapterHelloSqlite  = adapters.WithHelloSQLite(&adapters.HelloSQLite{File: infrastructure.Envs.HelloSQLite.File})
+	)
+	adaptor.Sync(adapterMongo, adapterPokemonResty, adapterHelloSqlite) // adapters init
 
 	// usecase block
 	pk, err := usecase.Get[pokemon.T](adaptor)

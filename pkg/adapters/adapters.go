@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"strings"
 
-	"entgo.io/ent/dialect/sql"
+	sqlEnt "entgo.io/ent/dialect/sql"
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type client interface {
-	*sql.Driver | *http.Client | *resty.Client | *mongo.Client
+	*sqlEnt.Driver | *http.Client | *resty.Client | *mongo.Client
 }
 
 // Driver - interface adapter.
@@ -26,11 +26,11 @@ type Driver[T client] interface {
 
 // Adapter components for external sources.
 type Adapter struct {
-	HelloMysql    *sql.Driver
+	HelloMysql    *sqlEnt.Driver
 	PokemonResty  *resty.Client
 	PokemonRest   *http.Client
-	HelloPostgres *sql.Driver
-	HelloSQLite   *sql.Driver
+	HelloPostgres *sqlEnt.Driver
+	HelloSQLite   *sqlEnt.Driver
 	HelloMongo    *mongo.Client
 	PersistUsers  *mongo.Database
 }

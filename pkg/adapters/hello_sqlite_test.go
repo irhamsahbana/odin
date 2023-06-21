@@ -3,8 +3,10 @@
 package adapters
 
 import (
+	"database/sql"
 	"testing"
 
+	"entgo.io/ent/dialect"
 	sqlEnt "entgo.io/ent/dialect/sql"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
@@ -23,8 +25,8 @@ func TestWithHelloSQLite(t *testing.T) {
 	is.NotNil(db, "mock db is null")
 	is.NotNil(mock, "sqlmock is null")
 
-	HelloSQLiteOpen = func(dialect, source string) (*sqlEnt.Driver, error) {
-		return sqlEnt.NewDriver(dialect, sqlEnt.Conn{ExecQuerier: db}), nil
+	HelloSQLiteOpen = func(d string, db *sql.DB) *sqlEnt.Driver {
+		return sqlEnt.NewDriver(dialect.SQLite, sqlEnt.Conn{ExecQuerier: db})
 	}
 
 	infrastructure.Configuration(
@@ -38,8 +40,8 @@ func TestWithHelloSQLite(t *testing.T) {
 			File: infrastructure.Envs.HelloSQLite.File,
 		}),
 	)
-
 	mock.ExpectClose()
+	_ = db.Close()
 
 	// Asserts
 	is.Nil(adapter.UnSync())

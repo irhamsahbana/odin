@@ -4,41 +4,15 @@ package adapters
 
 import (
 	"database/sql"
-	"database/sql/driver"
 	"fmt"
 
 	"entgo.io/ent/dialect"
 	sqlEnt "entgo.io/ent/dialect/sql"
 	"github.com/rs/zerolog/log"
-	"modernc.org/sqlite"
+	_ "modernc.org/sqlite"
 )
 
-type sqlite3Driver struct {
-	*sqlite.Driver
-}
-
-type sqlite3DriverConn interface {
-	Exec(string, []driver.Value) (driver.Result, error)
-}
-
-// Open is wrapper open the connection of sqlite driver.
-func (d sqlite3Driver) Open(name string) (conn driver.Conn, err error) {
-	conn, err = d.Driver.Open(name)
-	if err != nil {
-		return
-	}
-	_, err = conn.(sqlite3DriverConn).Exec("PRAGMA foreign_keys = ON;", nil)
-	if err != nil {
-		err = conn.Close()
-	}
-	return
-}
-
-func init() {
-	sql.Register("sqlite3", sqlite3Driver{Driver: &sqlite.Driver{}})
-}
-
-var HelloSQLiteOpen = sqlEnt.Open // HelloSQLiteOpen will invoke to test case.
+var HelloSQLiteOpen = sqlEnt.OpenDB // HelloSQLiteOpen will invoke to test case.
 
 // HelloSQLite is data of instances.
 type HelloSQLite struct {
@@ -56,12 +30,13 @@ func (h *HelloSQLite) Open() (*sqlEnt.Driver, error) {
 
 // Connect is connected the connection of sqlite.
 func (h *HelloSQLite) Connect() (err error) {
-	h.driver, err = HelloSQLiteOpen(dialect.SQLite,
-		h.File)
+	var db *sql.DB
+	db, err = sql.Open("sqlite", h.File)
 	if err != nil {
-		log.Error().Err(err).Msg("HelloSQLiteOpen is failed to open")
+		log.Error().Err(err).Msg("sql db is failed to open")
 		return err
 	}
+	h.driver = HelloSQLiteOpen(dialect.SQLite, db)
 	pool := h.driver.DB()
 	pool.SetMaxOpenConns(1)
 
