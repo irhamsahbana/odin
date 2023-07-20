@@ -18,6 +18,7 @@ import (
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/adapters"
 	transport "gitlab.playcourt.id/nanang_suryadi/odin/pkg/api/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/infrastructure"
+	kafkaconsumer "gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/kafka"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/ports/rest"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/shared"
 	"gitlab.playcourt.id/nanang_suryadi/odin/pkg/usecase"
@@ -106,22 +107,34 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 	 */
 	adaptor := &adapters.Adapter{}
 
-	db := infrastructure.Envs.HelloMongo //define var for store config
+	// db := infrastructure.Envs.HelloMongo //define var for store config
 
 	var (
-		adapterMongo = adapters.WithHelloMongo(&adapters.HelloMongo{
-			NetworkDB: adapters.NetworkDB{
-				Database: db.Database,
-				Host:     db.Host,
-				Port:     db.Port,
-				User:     db.User,
-				Password: db.Password,
-			},
-		})
+		// adapterMongo = adapters.WithHelloMongo(&adapters.HelloMongo{
+		// 	NetworkDB: adapters.NetworkDB{
+		// 		Database: db.Database,
+		// 		Host:     db.Host,
+		// 		Port:     db.Port,
+		// 		User:     db.User,
+		// 		Password: db.Password,
+		// 	},
+		// })
 		adapterPokemonResty = adapters.WithPokemonResty(&adapters.PokemonResty{URL: infrastructure.Envs.PokemonResty.URL})
 		adapterHelloSqlite  = adapters.WithHelloSQLite(&adapters.HelloSQLite{File: infrastructure.Envs.HelloSQLite.File})
+
+		adapterProducerHello = adapters.WithProducerHello(&adapters.ProducerHello{
+			BrokerUrls:     infrastructure.Envs.ProducerHello.BrokerUrls,
+			Topic:          infrastructure.Envs.ProducerHello.Topic,
+			ClientID:       infrastructure.Envs.ProducerHello.ClientID,
+		})
 	)
-	adaptor.Sync(adapterMongo, adapterPokemonResty, adapterHelloSqlite) // adapters init
+
+	adaptor.Sync(
+		adapterPokemonResty,
+		adapterHelloSqlite,
+		// adapterMongo,
+		adapterProducerHello,
+	) // adapters init
 
 	// usecase block
 	pk, err := usecase.Get[pokemon.T](adaptor)
@@ -160,6 +173,22 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 	}
 	errCh = h.Error()
 	// end http
+
+	/**
+	* Initialize Kafka Consumer
+	*/
+	consumerHello := kafkaconsumer.NewConsumer(
+		infrastructure.Envs.ConsumerHello.BrokerUrls,
+		infrastructure.Envs.ConsumerHello.Topic,
+		kafkaconsumer.WithGroupID(infrastructure.Envs.ConsumerHello.GroupID),
+	)
+	if err = consumerHello.Listen(); err != nil {
+		return err
+	}
+
+	errCh = consumerHello.Error()
+	// end kafka consumer
+
 	stopCh := shared.SetupSignalHandler()
 	return shared.Graceful(stopCh, errCh, func(ctx context.Context) { // graceful shutdown
 		log.Info().Dur("timeout", infrastructure.Envs.Server.Timeout).Msg("Shutting down HTTP/HTTPS server")
@@ -177,6 +206,10 @@ func (r *rootOptions) runServer(_ *cobra.Command, _ []string) error {
 			log.Error().Err(err).Msg("http server is failed shutdown")
 		}
 		h.Stop()
+		// kafka consumer
+		if err := consumerHello.Close(); err != nil {
+			log.Error().Err(err).Msg("kafka consumer hello is failed shutdown")
+		}
 		// adapters
 		if err := adaptor.UnSync(); err != nil {
 			log.Error().Err(err).Msg("there is failed on UnSync adapter")

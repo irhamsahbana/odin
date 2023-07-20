@@ -21,6 +21,7 @@ type MongoRest struct {
 func (h *MongoRest) Register(router chi.Router) {
 	router.Get("/users", rest.HandlerAdapter(h.GetAll).JSON)
 	router.Post("/user", rest.HandlerAdapter(h.Create).JSON)
+	router.Get("/testing-kafka", rest.HandlerAdapter(h.KafkaTesting).JSON)
 }
 
 // GetAll user.
@@ -74,4 +75,17 @@ func (h *MongoRest) Create(w http.ResponseWriter, r *http.Request) (entity.User,
 
 	l.Info().Msg("CreateUser")
 	return documents, nil
+}
+
+func (h *MongoRest) KafkaTesting(w http.ResponseWriter, r *http.Request) (e entity.User, err error) {
+	ctx, span, l := tracer.StartSpanLogTrace(r.Context(), "Update")
+	defer span.End()
+
+	err = h.UsersUsecase.Update(ctx)
+	if err != nil {
+		return e, rest.ErrBadRequest(w, r, err)
+	}
+
+	l.Info().Msg("UpdateUser")
+	return e, nil
 }

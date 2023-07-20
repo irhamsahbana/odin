@@ -10,11 +10,12 @@ import (
 	sqlEnt "entgo.io/ent/dialect/sql"
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog/log"
+	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type client interface {
-	*sqlEnt.Driver | *http.Client | *resty.Client | *mongo.Client
+	*sqlEnt.Driver | *http.Client | *resty.Client | *mongo.Client | *kafka.Writer
 }
 
 // Driver - interface adapter.
@@ -33,6 +34,7 @@ type Adapter struct {
 	HelloSQLite   *sqlEnt.Driver
 	HelloMongo    *mongo.Client
 	PersistUsers  *mongo.Database
+	ProducerHello *kafka.Writer
 }
 
 // Option is Adapter type return func.

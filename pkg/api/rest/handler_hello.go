@@ -40,6 +40,8 @@ func (*Hello) World(_ http.ResponseWriter, r *http.Request) (ResponseWorld, erro
 		Size:  100,
 		Total: 500,
 	})
+
+	// adapters.ProducerHello.
 	rest.StatusCreated(r)
 	return ResponseWorld{
 		Message: "Hello everybody",

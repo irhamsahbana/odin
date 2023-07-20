@@ -71,6 +71,17 @@ type Config struct {
 		Port       uint16 `yaml:"port" env:"HELLO_MONGO_PORT" env-description:"database port"`
 		AuthEnable bool   `yaml:"auth_enable" env:"HELLO_MONGO_AUTH_ENABLE" env-description:"use authentication or not"`
 	} `yaml:"HelloMongo"`
+	ProducerHello struct {
+		BrokerUrls string `yaml:"broker_urls" env:"PRODUCER_HELLO_BROKER_URLS" env-description:"broker urls"`
+		Topic      string `yaml:"topic" env:"PRODUCER_HELLO_TOPIC" env-description:"topic"`
+		ClientID   string `yaml:"client_id" env:"PRODUCER_HELLO_CLIENT_ID" env-description:"client id"`
+	} `yaml:"ProducerHello"`
+	ConsumerHello struct {
+		BrokerUrls string `yaml:"broker_urls" env:"CONSUMER_HELLO_BROKER_URLS" env-description:"broker urls"`
+		Topic      string `yaml:"topic" env:"CONSUMER_HELLO_TOPIC" env-description:"topic"`
+		Partition  int    `yaml:"partition" env:"CONSUMER_HELLO_PARTITION" env-description:"partition"`
+		GroupID    string `yaml:"group_id" env:"CONSUMER_HELLO_GROUP_ID" env-description:"group id"`
+	} `yaml:"ConsumerHello"`
 }
 
 var (

@@ -24,6 +24,7 @@ func init() {
 type T interface {
 	Get(ctx context.Context, paging entity.RequestGetUsers) (entity.ResponseGetUsers, error)
 	Create(ctx context.Context, user entity.User) (entity.User, error)
+	Update(ctx context.Context) error
 }
 
 type impl struct {

@@ -5,6 +5,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -67,4 +69,16 @@ func (i *impl) Create(ctx context.Context, user entity.User) (entity.User, error
 	}
 
 	return createdUser, nil
+}
+
+func (i *impl) Update(ctx context.Context) error {
+	uuid := uuid.New().String()
+
+	i.adapter.ProducerHello.WriteMessages(ctx, kafka.Message{
+		Key:   []byte("this-is-key-" + uuid),
+		Value: []byte("this-is-value"),
+		Time:  time.Now(),
+	})
+
+	return nil
 }
