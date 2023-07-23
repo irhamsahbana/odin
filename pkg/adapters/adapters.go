@@ -75,6 +75,12 @@ func (a *Adapter) UnSync() error {
 			errs = append(errs, err.Error())
 		}
 	}
+	if a.ProducerHello != nil {
+		log.Info().Msg("ProducerHello is closed")
+		if err := a.ProducerHello.Close(); err != nil {
+			errs = append(errs, err.Error())
+		}
+	}
 	if len(errs) > 0 {
 		return fmt.Errorf(strings.Join(errs, "\n"))
 	}
