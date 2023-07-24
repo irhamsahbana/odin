@@ -8,6 +8,8 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
+var KafkaProducerHelloOpen = kafka.NewWriter// KafkaProducerOpen will invoke to test case.
+
 type ProducerHello struct {
 	driver     *kafka.Writer
 	BrokerUrls string `example:"localhost:9092,localhost:9093"`
@@ -42,7 +44,7 @@ func (p *ProducerHello) Connect() error {
 		ClientID: p.ClientID,
 	}
 
-	p.driver = kafka.NewWriter(kafka.WriterConfig{
+	p.driver = KafkaProducerHelloOpen(kafka.WriterConfig{
 		Brokers: brokerUrls,
 		Topic:   p.Topic,
 		Dialer:  dialer,

@@ -24,12 +24,12 @@ Sqlite:
   file: "sqlite://../.data/hello.migration.db?_fk=1"
 
 ProducerHello:
-  broker_urls: "localhost:9092"
+  broker_urls: "localhost:9091"
   topic: "testing-topic"
   client_id: "hello-producer-1"
 
 ConsumerHello:
-  broker_urls: "localhost:9092"
+  broker_urls: "localhost:9091"
   topic: "testing-topic"
   partition: 0
   group_id: "consumer-hello-1"
